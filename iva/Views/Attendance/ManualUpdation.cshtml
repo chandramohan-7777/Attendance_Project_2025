@@ -1,0 +1,185 @@
+﻿@{
+    ViewData["Title"] = "Today";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="col-md-12">
+    <div class="row mb-4">
+        <div class="card p-4 shadow-sm col-md-6">
+            <div class="mb-3">
+                <label for="dateIn" class="form-label fw-bold">IN Time</label>
+                <input type="datetime-local" id="dateIn" class="form-control">
+            </div>
+            
+
+            <div class="mb-3">
+                <label for="rfidIn" class="form-label fw-bold">Employee RFID</label>
+                <input type="text" id="rfidIn" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label for="deviceSelectIn" class="form-label fw-bold">Select Device</label>
+                <select id="deviceSelectIn" class="form-control">
+                    <option value="">Loading devices...</option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-center gap-2 mb-3">
+
+                <button type="button" id="btnUpdateInTime" class="btn btn-primary">Update</button>
+            </div>
+
+        </div>
+        <div class="card p-4 shadow-sm col-md-6">
+           
+            <div class="mb-3">
+                <label for="dateOut" class="form-label fw-bold">Out Time</label>
+                <input type="datetime-local" id="dateOut" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label for="rfidIn" class="form-label fw-bold">Employee RFID</label>
+                <input type="text" id="rfidOut" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label for="deviceSelectOut" class="form-label fw-bold">Select Device</label>
+                <select id="deviceSelectOut" class="form-control">
+                    <option value="">Loading devices...</option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-center gap-2 mb-3">
+
+                <button type="button" id="btnUpdateOutTime" class="btn btn-primary">Update</button>
+            </div>
+
+        </div>
+    </div>
+   
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        // Load Devices in Dropdown
+        $.ajax({
+            url: 'api/att/GetCompanyDevices',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                console.log("Devices Loaded: ", response);
+                var deviceDropdowns = $('#deviceSelectIn, #deviceSelectOut'); 
+
+                deviceDropdowns.empty().append('<option value="">Select a device</option>');
+
+                if (response && response.length > 0) {
+                    $.each(response, function (index, device) {
+                        deviceDropdowns.append(
+                            $('<option></option>').attr('value', device.device_code).text(device.device_code)
+                        );
+                    });
+                } else {
+                    deviceDropdowns.html('<option value="">No devices available</option>');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading devices: ", xhr.responseText);
+                $('#deviceSelectIn, #deviceSelectOut').html('<option value="">Failed to load devices</option>');
+            }
+        });
+
+        // Handle IN Time Submission
+        $(document).on("click", "#btnUpdateInTime", function () {
+            let inTime = $('#dateIn').val().trim();
+            let rfid = $('#rfidIn').val().trim();
+            let devCode = $('#deviceSelectIn').val();
+
+            if (!inTime || !rfid || !devCode) {
+                Swal.fire("All fields are required!", "", "warning");
+                return;
+            }
+
+            let manualEntryInData = {
+                RFID: rfid,
+                devCode: devCode,
+                InTime: inTime
+            };
+
+            $.ajax({
+                url: "api/att/ManualEntryInTime",
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(manualEntryInData),
+                beforeSend: function () {
+                    console.log("Submitting IN Time...");
+                },
+                success: function (data) {
+                    Swal.fire({
+                        title: data.success ? "Success!" : "Error!",
+                        text: data.message,
+                        icon: data.success ? "success" : "error"
+                    });
+
+                    if (data.success) {
+                        setTimeout(() => location.reload(), 1000);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire("Failed to submit data!", xhr.responseText || "Unknown error", "error");
+                }
+            });
+        });
+
+        // Handle OUT Time Submission
+        $(document).on("click", "#btnUpdateOutTime", function () {
+            let outTime = $('#dateOut').val().trim();
+            let rfid = $('#rfidOut').val().trim();
+            let devCode = $('#deviceSelectOut').val();
+
+            if (!outTime || !rfid || !devCode) {
+                Swal.fire("All fields are required!", "", "warning");
+                return;
+            }
+
+            let manualEntryOutData = {
+                RFID: rfid,
+                devCode: devCode,
+                OutTime: outTime
+            };
+
+            $.ajax({
+                url: "api/att/ManualEntryOutTime",
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(manualEntryOutData),
+                beforeSend: function () {
+                    console.log("Submitting OUT Time...");
+                },
+                success: function (data) {
+                    Swal.fire({
+                        title: data.success ? "Success!" : "Error!",
+                        text: data.message,
+                        icon: data.success ? "success" : "error"
+                    });
+
+                    if (data.success) {
+                        setTimeout(() => location.reload(), 1000);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire("Failed to submit data!", xhr.responseText || "Unknown error", "error");
+                }
+            });
+        });
+
+    });
+
+</script>
+
+
+
+

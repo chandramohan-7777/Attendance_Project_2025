@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\Users\IVAusr\Music\Att build</_PublishTargetUrl>
+    <History>True|2025-06-09T08:27:33.5420237Z||;True|2025-06-09T13:43:09.2678900+05:30||;True|2025-06-09T12:50:45.7695638+05:30||;True|2025-06-09T12:49:24.5284017+05:30||;True|2025-06-09T12:47:51.2870618+05:30||;True|2025-06-09T12:27:32.6847405+05:30||;True|2025-06-09T11:15:33.1459092+05:30||;True|2025-06-09T10:17:45.7427001+05:30||;True|2025-03-03T16:50:13.8686212+05:30||;True|2025-02-27T11:40:44.0655694+05:30||;True|2025-02-26T13:02:23.8255879+05:30||;True|2025-02-26T12:57:13.8452899+05:30||;True|2025-02-26T12:05:52.6543784+05:30||;True|2025-02-26T11:13:17.0318990+05:30||;True|2025-02-25T16:43:47.8598858+05:30||;True|2025-02-25T13:46:21.8008296+05:30||;True|2025-01-20T15:01:26.9283856+05:30||;True|2025-01-07T12:05:43.4201673+05:30||;True|2025-01-07T11:13:53.9908727+05:30||;True|2025-01-06T17:52:22.7855750+05:30||;True|2024-12-31T17:51:50.5739338+05:30||;True|2024-12-31T14:56:36.1159422+05:30||;True|2024-12-30T15:40:08.0076756+05:30||;True|2024-12-30T14:28:13.3625247+05:30||;True|2024-12-30T13:08:09.9893923+05:30||;True|2024-12-13T16:26:11.3026391+05:30||;True|2024-12-13T14:31:42.9507298+05:30||;True|2024-12-13T13:01:14.7682669+05:30||;True|2024-10-24T17:55:15.9821512+05:30||;True|2024-10-24T16:37:30.4968725+05:30||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DbConnectionString">
+      <Value>server=localhost%3bdatabase=attdb%3bUser=att%3bPassword=technos2020%3bport=43306%3b</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

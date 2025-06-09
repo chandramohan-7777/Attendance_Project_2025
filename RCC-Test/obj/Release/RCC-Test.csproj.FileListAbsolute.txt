@@ -1,0 +1,15 @@
+E:\Attendance\RCC-Test\bin\Release\RCC-Test.exe.config
+E:\Attendance\RCC-Test\bin\Release\RCC-Test.exe
+E:\Attendance\RCC-Test\bin\Release\RCC-Test.pdb
+E:\Attendance\RCC-Test\bin\Release\RCC.dll
+E:\Attendance\RCC-Test\bin\Release\Newtonsoft.Json.dll
+E:\Attendance\RCC-Test\bin\Release\RCC.xml
+E:\Attendance\RCC-Test\bin\Release\Newtonsoft.Json.xml
+E:\Attendance\RCC-Test\obj\Release\RCC-Test.csproj.AssemblyReference.cache
+E:\Attendance\RCC-Test\obj\Release\RCC.Form1.resources
+E:\Attendance\RCC-Test\obj\Release\RCC_Test.Properties.Resources.resources
+E:\Attendance\RCC-Test\obj\Release\RCC-Test.csproj.GenerateResource.cache
+E:\Attendance\RCC-Test\obj\Release\RCC-Test.csproj.CoreCompileInputs.cache
+E:\Attendance\RCC-Test\obj\Release\RCC-Test.csproj.Up2Date
+E:\Attendance\RCC-Test\obj\Release\RCC-Test.exe
+E:\Attendance\RCC-Test\obj\Release\RCC-Test.pdb

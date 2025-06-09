@@ -1,0 +1,455 @@
+﻿@{
+    ViewData["Title"] = "Report";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            margin-right: 10px;
+            margin-left: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 6px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #fff;
+        }
+
+        .emp-info {
+            background-color: #fff;
+        }
+
+        .search-container {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+            .search-container label {
+                font-weight: bold;
+                margin-right: 10px;
+            }
+
+            .search-container input {
+                padding: 6px;
+                width: 200px;
+            }
+
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+            .pagination button {
+                padding: 8px 16px;
+                margin: 2px;
+                cursor: pointer;
+            }
+
+        .span-57 {
+            align-items: center;
+            background-color: #fff;
+            box-sizing: border-box;
+            color: #000;
+            display: inline-flex;
+            fill: #000;
+            font-family: Inter,sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            height: 38px;
+            justify-content: center;
+            letter-spacing: -.8px;
+            line-height: 24px;
+            min-width: 120px;
+            outline: 0;
+            padding: 0 17px;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .button-59 {
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #000;
+            border-radius: 5px;
+            box-sizing: border-box;
+            color: #000;
+            cursor: pointer;
+            display: inline-flex;
+            fill: #000;
+            font-family: Inter,sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            height: 38px;
+            justify-content: center;
+            letter-spacing: -.8px;
+            line-height: 24px;
+            min-width: 120px;
+            outline: 0;
+            padding: 0 8px;
+            text-align: center;
+            text-decoration: none;
+            transition: all .3s;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+            .button-59:focus {
+                color: #171e29;
+            }
+
+            .button-59:hover {
+                border-color: #06f;
+                color: #06f;
+                fill: #06f;
+            }
+
+            .button-59:active {
+                border-color: #06f;
+                color: #06f;
+                fill: #06f;
+            }
+    </style>
+
+    <h1>Monthly Performance Report</h1>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <!-- Navbar content -->
+            <div class="collapse navbar-collapse d-flex align-items-center justify-content-between">
+                <!-- Month and Year Filter -->
+                <div class="d-flex align-items-center">
+                    <label for="monthSelect" class="me-2">Month:</label>
+                    <select id="monthSelect" class="form-select me-3" style="width: 150px;">
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+
+                    <label for="yearSelect" class="me-2">Year:</label>
+                    <select id="yearSelect" class="form-select me-3" style="width: 150px;">
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                        <option value="2029">2029</option>
+                        <option value="2030">2030</option>
+                    </select>
+
+                    <button class="btn  button-59" type="button" id="filterButton">Filter</button>
+                </div>
+
+                <!-- Search Input -->
+                <form class="d-flex align-items-center" style="max-width: 400px;">
+                    <label for="searchInput" class="me-2">Search:</label>
+                    <input id="searchInput" class="form-control me-2" type="search" placeholder="Intern Code or Name" aria-label="Search" />
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div style=" display: flex; justify-content: end; margin-top:8px;margin-bottom: 8px;">
+        <button class="button-59 w-80" id="downloadExcel" type="button"> <i class="fa fa-download me-2"></i>Download ExcelSheet</button>
+    </div>
+
+
+    <div id="loadingMessage" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.8); color: wheat; padding: 20px; border-radius: 10px; z-index: 9999;">
+        please wait,loading the data...
+    </div>
+    <div id="loadingExcelsheet" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.8); color: wheat; padding: 20px; border-radius: 10px; z-index: 9999;">
+        please wait,downloading the data...
+    </div>
+    <table>
+        <thead>
+            <tr class="emp-info">
+                <th colspan="2">Employee Info</th>
+                <th colspan="30">Attendance Details</th>
+            </tr>
+        </thead>
+        <tbody id="attendanceData">
+        </tbody>
+    </table>
+    <div class="pagination" id="pagination">
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            function showLoadingMessage() {
+                $("#loadingMessage").fadeIn();
+            }
+            function hideLoadingMessage() {
+                $("#loadingMessage").fadeOut();
+            }
+            function showLoadingExceldownloadMessage() {
+                $("#loadingExcelsheet").fadeIn();
+            }
+            function hideLoadingExceldownloadMessage() {
+                $("#loadingExcelsheet").fadeOut();
+            }
+            $('#filterButton').on('click', function () {
+                showLoadingMessage();
+                var selectedMonth = $('#monthSelect').val();
+                var selectedYear = $('#yearSelect').val();
+
+                fetchData(selectedMonth, selectedYear);
+            });
+            var now = new Date();
+            var currentMonth = now.getMonth() + 1;
+            var currentYear = now.getFullYear();
+            $("#monthSelect").val(currentMonth);
+            $("#yearSelect").val(currentYear);
+            console.log("month", currentMonth);
+            console.log("Year", currentYear);
+
+            $('#downloadExcel').on('click', function () {
+                showLoadingExceldownloadMessage();
+                var selectedMonth = $('#monthSelect').val();
+                var selectedYear = $('#yearSelect').val();
+
+                fetchDataExcelData(selectedMonth, selectedYear);
+            })
+            function calculateTime(sDate, eDate) {
+                const start = new Date(sDate);
+                const end = new Date(eDate);
+                const diffInMilliseconds = end - start;
+                const diffInMinutes = Math.floor(diffInMilliseconds / (1000 * 60));
+                const hours = Math.floor(diffInMinutes / 60);
+                const minutes = diffInMinutes % 60;
+                return `${hours}hrs ${minutes}mins`;
+            }
+            function convertTime(cDate) {
+                var dateObj = new Date(cDate);
+                var options = { hour: '2-digit', minute: '2-digit', hour12: true };
+                var formattedTime = dateObj.toLocaleTimeString('en-US', options);
+                return formattedTime;
+            }
+
+            // CLosedxml
+
+            function fetchDataExcelData(month, year) {
+                $.ajax({
+                    context: document.body,
+                    url: 'api/att/GetMonthlyInternReportExcel',
+                    type: 'POST',
+                    data: { month: month, year: year },
+                    xhrFields: {
+                        responseType: 'blob'
+                    },
+                    success: function (response, status, xhr) {
+                        var blob = response;
+                        var contentDisposition = xhr.getResponseHeader('Content-Disposition');
+                        var fileName = 'AttendanceReport.xlsx';
+
+                        if (contentDisposition) {
+                            // Check for both 'filename*=' and 'filename='
+                            var filenameRegex = /filename\*?=(?:UTF-8''|")?([^;"]+)/i;
+                            var match = contentDisposition.match(filenameRegex);
+
+                            if (match && match[1]) {
+                                fileName = decodeURIComponent(match[1].replace(/['"]/g, ''));
+                            }
+                        }
+
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement('a');
+                        link.href = url;
+                        link.download = fileName;
+                        link.click();
+                        window.URL.revokeObjectURL(url);
+
+                        hideLoadingExceldownloadMessage();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error fetching Excel data:', {
+                            status: status,
+                            error: error,
+                            response: xhr.responseText
+                        });
+                        alert('Error fetching data. Check console for details.');
+                        hideLoadingExceldownloadMessage();
+                    }
+                });
+            }
+
+
+            var originalData = JSON.parse('@Html.Raw(Json.Serialize(ViewBag.list))');
+            console.log(originalData);
+
+            var filteredData = [...originalData];
+            var rowsPerPage = 2;
+            var currentPage = 1;
+            renderTable(filteredData);
+
+            // // Search input event listener
+            $('#searchInput').on('input', function () {
+                var searchValue = $(this).val().toLowerCase();
+
+                // Filter the original data based on the search value
+                filteredData = originalData.filter(intern =>
+                    intern.internName.toLowerCase().includes(searchValue) ||
+                    intern.internCode.toLowerCase().includes(searchValue)
+                );
+
+                currentPage = 1;
+                renderTable(filteredData);
+            });
+
+
+
+            $(document).on('click', '.page-link', function () {
+                currentPage = parseInt($(this).data('page'));
+                renderTable(filteredData);
+            });
+
+            function fetchData(month, year) {
+                $.ajax({
+                    context: document.body,
+                    url: 'api/att/GetMonthlyInternReport',
+                    type: 'POST',
+                    data: { month: month, year: year },
+                    success: function (response) {
+                        if (response.success) {
+                            hideLoadingMessage();
+                            originalData = response.list;
+                            filteredData = [...originalData];
+                            currentPage = 1;
+                            renderTable(filteredData);
+
+                        } else {
+                            alert('Error fetching data: ' + response.message);
+                        }
+                    }
+                });
+            }
+
+            function renderTable(data) {
+
+                $('#attendanceData').empty();
+                var start = (currentPage - 1) * rowsPerPage;
+                var end = start + rowsPerPage;
+                var paginatedData = data.slice(start, end);
+                $.each(paginatedData, function (i, intern) {
+                    var present = 0, absent = 0, totDays = 0, wDays = 0, workingHours = [];
+                    $.each(intern.dList, function (j, record) {
+                        if (record.status) present++;
+                        else absent++;
+                        workingHours.push(
+                            record.internIn !== "0001-01-01T00:00:00" && record.internOut !== "0001-01-01T00:00:00"
+                                ? calculateTime(record.internIn, record.internOut)
+                                : '--:--'
+                        );
+                    });
+                    $.each(intern.dList, function (index, d) {
+                        if (d.dType === 'weekend' && d.status === true) wDays++;
+                        else if (d.dType !== 'weekend') {
+                            totDays++;
+                            if (d.status === true) wDays++;
+                        }
+                    });
+                    var employeeRow = `
+                                        <tr class="emp-info">
+                                            <td colspan="6"><strong>Employee Code:</strong> ${intern.internCode}</td>
+                                            <td colspan="6"><strong>Employee Name:</strong> ${intern.internName}</td>
+                                            <td colspan="5"><strong>Total Present:</strong> <span style="color: #27ae60;">${present}</span></td>
+                                            <td colspan="5"><strong>Total Absent:</strong> <span style="color: #e74c3c;">${absent}</span></td>
+                                            <td colspan="5"><strong>Working Days:</strong> ${wDays}/${totDays}</td>
+                                            <td colspan="5"><strong>Company Name:</strong> IVA Technos</td>
+                                        </tr>`;
+                    $('#attendanceData').append(employeeRow);
+                    $('#attendanceData').append(`
+                                        <tr><td><strong>Days</strong></td>${intern.dList.map(record => `<td>${record.day}</td>`).join('')}</tr>
+                                        <tr><td><strong>Day of Week</strong></td>${intern.dList.map(record => `<td>${record.dayOfWeek.substring(0, 3)}</td>`).join('')}</tr>
+                                        <tr><td><strong>IN</strong></td>${intern.dList.map(record => `<td>${record.internIn === "0001-01-01T00:00:00" ? '--:--' : convertTime(record.internIn)}</td>`).join('')}</tr>
+                                        <tr><td><strong>OUT</strong></td>${intern.dList.map(record => `<td>${record.internOut === "0001-01-01T00:00:00" ? '--:--' : convertTime(record.internOut)}</td>`).join('')}</tr>
+                                        <tr><td><strong>WorkingHours</strong></td>${workingHours.map(hours => `<td>${hours}</td>`).join('')}</tr>
+                                        <tr><td><strong>Status</strong></td>${intern.dList.map(record => `<td style="color:${record.status ? '#27ae60' : '#e74c3c'};">${record.status ? 'P' : 'A'}</td>`).join('')}</tr>
+
+                                        `);
+                });
+                renderPagination(data.length);
+            }
+
+            function renderPagination(totalItems) {
+                var totalPages = Math.ceil(totalItems / rowsPerPage);
+                var paginationHtml = '';
+                for (var i = 1; i <= totalPages; i++) {
+                    paginationHtml += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                                                           <a class="page-link" data-page="${i}">${i}</a>
+                                                       </li>`;
+                }
+                $('#pagination').html(paginationHtml);
+            }
+
+            //Download pdf
+
+            // $('#downloadPdf').click(function () {
+            //     const pdf = new jspdf.jsPDF('landscape', 'pt', 'a4');
+            //     const rowsPerPage = 2;
+            //     const totalEmployees = filteredData.length;
+            //     const totalPages = Math.ceil(totalEmployees / rowsPerPage);
+            //     const promises = [];
+
+            //     for (let page = 0; page < totalPages; page++) {
+            //         const pageData = filteredData.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+            //         renderTable(pageData);
+
+            //         const element = $('#attendanceData')[0];
+            //         promises.push(
+            //             html2canvas(element, { scale: 2 }).then(function (canvas) {
+            //                 const imgData = canvas.toDataURL('image/png');
+            //                 const pageWidth = pdf.internal.pageSize.getWidth();
+            //                 const pageHeight = pdf.internal.pageSize.getHeight();
+            //                 const imgWidth = canvas.width;
+            //                 const imgHeight = canvas.height;
+            //                 const scale = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+            //                 const x = (pageWidth - imgWidth * scale) / 2;
+            //                 const y = (pageHeight - imgHeight * scale) / 2;
+
+            //                 pdf.addImage(imgData, 'PNG', x, y, imgWidth * scale, imgHeight * scale);
+            //                 if (page !== totalPages - 1) pdf.addPage();
+            //             })
+            //         );
+            //     }
+
+            //     Promise.all(promises).then(() => {
+            //         pdf.save('Attendance_Report_Paginated.pdf');
+            //     });
+            // });
+
+        });
+    </script>
+

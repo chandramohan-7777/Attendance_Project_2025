@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iva", "iva\iva.csproj", "{EE0D1484-EE77-411D-A2F7-5C90C903872B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RCC-Test", "RCC-Test\RCC-Test.csproj", "{502C7F81-76BB-40A1-AF48-31127D6B564A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE0D1484-EE77-411D-A2F7-5C90C903872B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE0D1484-EE77-411D-A2F7-5C90C903872B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE0D1484-EE77-411D-A2F7-5C90C903872B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE0D1484-EE77-411D-A2F7-5C90C903872B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{502C7F81-76BB-40A1-AF48-31127D6B564A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{502C7F81-76BB-40A1-AF48-31127D6B564A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{502C7F81-76BB-40A1-AF48-31127D6B564A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{502C7F81-76BB-40A1-AF48-31127D6B564A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ADED078A-5AEB-4D77-A555-8E415AE4D74C}
+	EndGlobalSection
+EndGlobal

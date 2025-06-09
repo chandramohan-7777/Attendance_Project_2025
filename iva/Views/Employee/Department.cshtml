@@ -1,0 +1,323 @@
+﻿@{
+    ViewData["Title"] = "Official holidays";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using System.Text.Json
+<div class="row">
+    <div class="col-10">
+        <div class="pagetitle">
+            <h1>Department List</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item active">Department List</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="col-2">
+        <button type='button' id="btnAdd" class='btnAdd btn btn-sm btn-light m-1'>Add</button>
+    </div>
+</div>
+<div id="tblDepartmentList" class="table-responsive"></div>
+
+<div class="modal fade" id="departmentAddModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" >Department</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="form-group">
+                        <label class="control-label"> Department Id</label>
+                        <input id="departmentId" class="form-control" readOnly="True" />
+                        <span class="text-danger" id="departmentIdError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label"> Department Name</label>
+                        <input class="form-control" id="departmentName" />
+                        <span class="text-danger" id="departmentNameError"></span>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="btnAddSave" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="departmentUpdateModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Department</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="form-group">
+                        <label class="control-label"> Department Id</label>
+                        <input id="departmentUpdateId" class="form-control" readOnly="True" />
+                        <span class="text-danger" id="departmentIdError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label"> Department Name</label>
+                        <input class="form-control" id="departmentUpdateName" />
+                        <span class="text-danger" id="departmentUpdateNameError"></span>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="btnUpdateSave" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteDepartmentModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Department</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6 class="modal-title">Are you sure delete department?</h6>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+                <button type="button" id="btnDepartmentDelete" class="btn btn-primary">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        var visitorId = 0;
+        function generateTable(list) {
+            var $table = $("<table id='foo-row-toggler' class='table table-borderless datatable'>");
+            $table.append("<thead><tr><th style='text-align: left;'>Id</th><th style='text-align: left;'>Department Name</td><th style='text-align: left;'>Action</th></tr></thead>");
+            var $tbody = $("<tbody>");
+            $.each(list, function (i, val) {
+
+                var $row = "<tr><td style='text-align: left;'>" + val.id + "</td> <td style='text-align: left;'>" + val.departmentName + "</td> <td style='text-align: left;'><button type='button' class='btnUpdate btn btn-sm btn-info m-1' data-bs-toggle='modal' data-bs-target='#departmentUpdateModal'>Update</button><button type='button' class='btnDelete btn btn-sm btn-danger m-1'><i class='fa fa-edit'></i> Delete</button></td></tr > ";
+                $tbody.append($row);
+            });
+            $tbody.append("</tbody>");
+            $table.append($tbody);
+            $("#tblDepartmentList").html($table);
+            $("#foo-row-toggler").DataTable();
+        }
+        var list = @Html.Raw(JsonSerializer.Serialize(ViewBag.departmentList));
+        console.log(list);
+
+
+        generateTable(list);
+        $("#btnAdd").on("click", function () {
+            $(".text-danger").text("");
+            $('#departmentId').val(0);
+            $('#departmentName').val('');
+            departmentId = 0;
+            $("#departmentAddModal").modal("show");
+        });
+
+        function validateForm() {
+            let isValid = true;
+            $(".text-danger").text("");
+
+            if (!$('#departmentId').val()) {
+                $('#departmentIdError').text("Department Id is required.");
+                isValid = false;
+            }
+            if (!$('#departmentName').val()) {
+                $('#departmentNameError').text("Departmet Name is required.");
+                isValid = false;
+            }
+            else if (!/^[a-zA-Z\s]+$/.test($('#departmentName').val())) {
+                $('#departmentNameError').text("Only letters are allowed.");
+                isValid = false;
+            }
+            
+
+            return isValid;  // Ensure function returns boolean value
+        }
+
+
+        function validateUpdateForm() {
+            let isValid = true;
+            $(".text-danger").text("");
+
+            if (!$('#departmentUpdateId').val()) {
+                $('#departmentIdError').text("Department Id is required.");
+                isValid = false;
+            }
+            if (!$('#departmentUpdateName').val()) {
+                $('#departmentUpdateNameError').text("Department Name is required.");
+                isValid = false;
+            }
+            else if (!/^[a-zA-Z\s]+$/.test($('#departmentUpdateName').val())) {
+                $('#departmentUpdateNameError').text("Only letters are allowed.");
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+
+        $("#btnAddSave").on("click", function () {
+
+            if (!validateForm()) {
+                return;
+            }
+            var departmentDetail = {
+                id: $('#departmentId').val(),
+                departmentName: $('#departmentName').val(),
+
+            };
+            $.ajax({
+                context: document.body,
+                data: { obj: departmentDetail },
+                error: function (e) { swal(e.Message, "", "error"); },
+                success: function (data) {
+                    console.log(data)
+                    if (data.success === true) {
+                        Swal.fire({
+                            title: "Department Information!",
+                            text: data.message,
+                            icon: "success"
+                        });
+                        location.reload();
+                    }
+                    else if (data.success === false) {
+                        Swal.fire({
+                            title: "Department Information!",
+                            text: data.message,
+                            icon: "warning"
+                        });
+                    }
+                },
+                dataType: "json",
+                type: "POST",
+                url: "att/AddDepartmentDetail"
+            });
+        });
+
+
+        $("#btnUpdateSave").on("click", function () {
+
+            if (!validateUpdateForm()) {
+                return;
+            }
+            var departmentDetail = {
+                id: $('#departmentUpdateId').val(),
+                departmentName: $('#departmentUpdateName').val(),
+            };
+
+
+            $.ajax({
+                context: document.body,
+                data: { obj: departmentDetail },
+                success: function (data) {
+                    console.log(data)
+                    if (data.success === true) {
+                        Swal.fire({
+                            title: "Department Information!",
+                            text: data.message,
+                            icon: "success"
+                        });
+                        location.reload();
+                    }
+                    else if (data.success === false) {
+                        Swal.fire({
+                            title: "Department Information!",
+                            text: data.message,
+                            icon: "warning"
+                        });
+                        location.reload();
+                    }
+                },
+                dataType: "json",
+                type: "POST",
+                url: "att/UpdateDepartmentDetail"
+            });
+        });
+
+
+        $("#btnDepartmentDelete").on("click", function () {
+            $.ajax({
+                context: document.body,
+                data: { departmentId: departmentId },
+                error: function (e) { swal(e.Message, "", "error"); },
+                success: function (data) {
+                    if (data.success === true) {
+                        Swal.fire({
+                            title: "Department Information!",
+                            text: data.message,
+                            icon: "success"
+                        });
+                        location.reload();
+                    } else if (data.success === false) {
+                        Swal.fire({
+                            title: "Department Information!",
+                            text: data.message,
+                            icon: "warning"
+                        });
+                        location.reload();
+                    }
+                },
+                dataType: "json",
+                type: "POST",
+                url: "att/DeleteDepartment"
+            });
+        });
+
+
+        $('#tblDepartmentList tbody').on('click', '.btnUpdate', function () {
+            $(".text-danger").text("");
+            let departmentId = $(this).closest("tr").find("td:nth-child(1)").html();
+
+           
+            $.ajax({
+                context: document.body,
+                data: { departmentId: departmentId },
+                error: function (e) {
+                    Swal.fire("Error!", e.Message, "error");
+                },
+                success: function (data) {
+                    console.log("GetHolidayDetail", data);
+
+                    if (data.success === true) {
+                        $('#departmentUpdateId').val(data.list.id);
+                        $('#departmentUpdateName').val(data.list.departmentName || "");
+                        $("#departmentUpdateModal").modal("show");
+                    } else {
+                        Swal.fire("Error!", data.message, "error");
+                    }
+                },
+                dataType: "json",
+                type: "POST",
+                url: "att/GetDepartmentDetail"
+            });
+        });
+
+
+
+        $('#tblDepartmentList tbody').on('click', '.btnDelete', function () {
+            departmentId = $(this).closest("tr").find("td:nth-child(1)").html();
+            $("#deleteDepartmentModal").modal("show");
+        });
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+

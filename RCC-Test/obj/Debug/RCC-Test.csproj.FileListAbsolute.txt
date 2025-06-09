@@ -1,0 +1,75 @@
+D:\iva\IvaAttendance\RCC-Test\bin\Debug\RCC-Test.exe.config
+D:\iva\IvaAttendance\RCC-Test\bin\Debug\RCC-Test.exe
+D:\iva\IvaAttendance\RCC-Test\bin\Debug\RCC-Test.pdb
+D:\iva\IvaAttendance\RCC-Test\bin\Debug\RCC.dll
+D:\iva\IvaAttendance\RCC-Test\bin\Debug\Newtonsoft.Json.dll
+D:\iva\IvaAttendance\RCC-Test\bin\Debug\RCC.xml
+D:\iva\IvaAttendance\RCC-Test\bin\Debug\Newtonsoft.Json.xml
+D:\iva\IvaAttendance\RCC-Test\obj\Debug\RCC-Test.csproj.AssemblyReference.cache
+D:\iva\IvaAttendance\RCC-Test\obj\Debug\RCC.Form1.resources
+D:\iva\IvaAttendance\RCC-Test\obj\Debug\RCC_Test.Properties.Resources.resources
+D:\iva\IvaAttendance\RCC-Test\obj\Debug\RCC-Test.csproj.GenerateResource.cache
+D:\iva\IvaAttendance\RCC-Test\obj\Debug\RCC-Test.csproj.CoreCompileInputs.cache
+D:\iva\IvaAttendance\RCC-Test\obj\Debug\RCC-Test.csproj.Up2Date
+D:\iva\IvaAttendance\RCC-Test\obj\Debug\RCC-Test.exe
+D:\iva\IvaAttendance\RCC-Test\obj\Debug\RCC-Test.pdb
+D:\Attendance\RCC-Test\bin\Debug\RCC-Test.exe.config
+D:\Attendance\RCC-Test\bin\Debug\RCC-Test.exe
+D:\Attendance\RCC-Test\bin\Debug\RCC-Test.pdb
+D:\Attendance\RCC-Test\bin\Debug\RCC.dll
+D:\Attendance\RCC-Test\bin\Debug\Newtonsoft.Json.dll
+D:\Attendance\RCC-Test\bin\Debug\RCC.xml
+D:\Attendance\RCC-Test\bin\Debug\Newtonsoft.Json.xml
+D:\Attendance\RCC-Test\obj\Debug\RCC-Test.csproj.AssemblyReference.cache
+D:\Attendance\RCC-Test\obj\Debug\RCC.Form1.resources
+D:\Attendance\RCC-Test\obj\Debug\RCC_Test.Properties.Resources.resources
+D:\Attendance\RCC-Test\obj\Debug\RCC-Test.csproj.GenerateResource.cache
+D:\Attendance\RCC-Test\obj\Debug\RCC-Test.csproj.CoreCompileInputs.cache
+D:\Attendance\RCC-Test\obj\Debug\RCC-Test.csproj.Up2Date
+D:\Attendance\RCC-Test\obj\Debug\RCC-Test.exe
+D:\Attendance\RCC-Test\obj\Debug\RCC-Test.pdb
+D:\iva\Attendance\Attendance3-site\Attendance3\iva\RCC-Test\bin\Debug\RCC-Test.exe.config
+D:\iva\Attendance\Attendance3-site\Attendance3\iva\RCC-Test\bin\Debug\RCC-Test.exe
+D:\iva\Attendance\Attendance3-site\Attendance3\iva\RCC-Test\bin\Debug\RCC-Test.pdb
+D:\iva\Attendance\Attendance3-site\Attendance3\iva\RCC-Test\bin\Debug\RCC.dll
+D:\iva\Attendance\Attendance3-site\Attendance3\iva\RCC-Test\bin\Debug\Newtonsoft.Json.dll
+D:\iva\Attendance\Attendance3-site\Attendance3\iva\RCC-Test\bin\Debug\RCC.xml
+D:\iva\Attendance\Attendance3-site\Attendance3\iva\RCC-Test\bin\Debug\Newtonsoft.Json.xml
+D:\iva\Attendance\Attendance3-site\Attendance3\iva\RCC-Test\obj\Debug\RCC-Test.csproj.AssemblyReference.cache
+D:\iva\Attendance\Attendance3-site\Attendance3\iva\RCC-Test\obj\Debug\RCC.Form1.resources
+D:\iva\Attendance\Attendance3-site\Attendance3\iva\RCC-Test\obj\Debug\RCC_Test.Properties.Resources.resources
+D:\iva\Attendance\Attendance3-site\Attendance3\iva\RCC-Test\obj\Debug\RCC-Test.csproj.GenerateResource.cache
+D:\iva\Attendance\Attendance3-site\Attendance3\iva\RCC-Test\obj\Debug\RCC-Test.csproj.CoreCompileInputs.cache
+D:\iva\Attendance\Attendance3-site\Attendance3\iva\RCC-Test\obj\Debug\RCC-Test.csproj.Up2Date
+D:\iva\Attendance\Attendance3-site\Attendance3\iva\RCC-Test\obj\Debug\RCC-Test.exe
+D:\iva\Attendance\Attendance3-site\Attendance3\iva\RCC-Test\obj\Debug\RCC-Test.pdb
+D:\Attendance Depertment\Attendance\RCC-Test\bin\Debug\RCC-Test.exe.config
+D:\Attendance Depertment\Attendance\RCC-Test\bin\Debug\RCC-Test.exe
+D:\Attendance Depertment\Attendance\RCC-Test\bin\Debug\RCC-Test.pdb
+D:\Attendance Depertment\Attendance\RCC-Test\bin\Debug\RCC.dll
+D:\Attendance Depertment\Attendance\RCC-Test\bin\Debug\Newtonsoft.Json.dll
+D:\Attendance Depertment\Attendance\RCC-Test\bin\Debug\RCC.xml
+D:\Attendance Depertment\Attendance\RCC-Test\bin\Debug\Newtonsoft.Json.xml
+D:\Attendance Depertment\Attendance\RCC-Test\obj\Debug\RCC-Test.csproj.AssemblyReference.cache
+D:\Attendance Depertment\Attendance\RCC-Test\obj\Debug\RCC.Form1.resources
+D:\Attendance Depertment\Attendance\RCC-Test\obj\Debug\RCC_Test.Properties.Resources.resources
+D:\Attendance Depertment\Attendance\RCC-Test\obj\Debug\RCC-Test.csproj.GenerateResource.cache
+D:\Attendance Depertment\Attendance\RCC-Test\obj\Debug\RCC-Test.csproj.CoreCompileInputs.cache
+D:\Attendance Depertment\Attendance\RCC-Test\obj\Debug\RCC-Test.csproj.Up2Date
+D:\Attendance Depertment\Attendance\RCC-Test\obj\Debug\RCC-Test.exe
+D:\Attendance Depertment\Attendance\RCC-Test\obj\Debug\RCC-Test.pdb
+D:\Attendance project\Attendance\Attendance\RCC-Test\bin\Debug\RCC-Test.exe.config
+D:\Attendance project\Attendance\Attendance\RCC-Test\bin\Debug\RCC-Test.exe
+D:\Attendance project\Attendance\Attendance\RCC-Test\bin\Debug\RCC-Test.pdb
+D:\Attendance project\Attendance\Attendance\RCC-Test\bin\Debug\RCC.dll
+D:\Attendance project\Attendance\Attendance\RCC-Test\bin\Debug\Newtonsoft.Json.dll
+D:\Attendance project\Attendance\Attendance\RCC-Test\bin\Debug\RCC.xml
+D:\Attendance project\Attendance\Attendance\RCC-Test\bin\Debug\Newtonsoft.Json.xml
+D:\Attendance project\Attendance\Attendance\RCC-Test\obj\Debug\RCC-Test.csproj.AssemblyReference.cache
+D:\Attendance project\Attendance\Attendance\RCC-Test\obj\Debug\RCC.Form1.resources
+D:\Attendance project\Attendance\Attendance\RCC-Test\obj\Debug\RCC_Test.Properties.Resources.resources
+D:\Attendance project\Attendance\Attendance\RCC-Test\obj\Debug\RCC-Test.csproj.GenerateResource.cache
+D:\Attendance project\Attendance\Attendance\RCC-Test\obj\Debug\RCC-Test.csproj.CoreCompileInputs.cache
+D:\Attendance project\Attendance\Attendance\RCC-Test\obj\Debug\RCC-Test.csproj.Up2Date
+D:\Attendance project\Attendance\Attendance\RCC-Test\obj\Debug\RCC-Test.exe
+D:\Attendance project\Attendance\Attendance\RCC-Test\obj\Debug\RCC-Test.pdb

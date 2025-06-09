@@ -1,0 +1,482 @@
+﻿@{
+    ViewData["Title"] = "Visitor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using System.Text.Json
+<div class="row">
+    <div class="col-10">
+        <div class="pagetitle">
+            <h1>Visitor List</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item active">Visitor List</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="col-2">
+        <button type='button' id="btnAdd" class='btnAdd btn btn-sm btn-light m-1'>Add</button>
+    </div>
+</div>
+<div id="tblVisitorList" class="table-responsive"></div>
+<div class="modal fade" id="visitorModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="visitorModal">Visitor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="form-group">
+                        <label class="control-label"> VisitorId</label>
+                        <input id="visitorId" class="form-control" readOnly="True" />
+                        <span class="text-danger" id="VisitorIdError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label"> Name</label>
+                        <input id="visitorName" class="form-control" />
+                        <span class="text-danger" id="VisitorNameError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label"> InternCode</label>
+                        <input id="visitorInternCode" class="form-control" />
+                        <span class="text-danger" id="VisitorInternCodeError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Select Department</label>
+                        <select id="visitorDepartment" class="form-control">
+                            <option value="">Loading departments...</option>
+                        </select>
+                        <span class="text-danger" id="VisitorDepartmentError"></span>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label"> PhoneNo</label>
+                        <input class="form-control" id="visitorphoneNo" />
+                        <span class="text-danger" id="VisitorphoneNoError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label"> Team </label>
+                        <input class="form-control" id="visitorpurpose" />
+                        <span class="text-danger" id="VisitorpurposeError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Role</label>
+                        <select id="visitortype" class="form-control">
+                            <option value="">--Select--</option>
+                            <option value="INTERN">INTERN</option>
+                            <option value="VISITOR">VISITOR</option>
+                        </select>
+                        <span class="text-danger" id="VisitorTypeError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label"> RFID</label>
+                        <input class="form-control" id="visitorRfid" />
+                        <span class="text-danger" id="VisitorRFIDError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Joining Date</label>
+                        <input class="form-control" type="date" id="fromDate" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Relieving Date</label>
+                        <input class="form-control" type="date" id="toDate" />
+                    </div>
+                    <div>
+                        <label class="control-label">Status</label>
+                        <p>
+                            <input type="radio" name="option" value="1" id="active"> Active
+                            <input type="radio" name="option" value="0" id="deactive"> De-Active
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="btnSave" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteVisitorModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Visitor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6 class="modal-title">Are you sure delete visitor?</h6>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+                <button type="button" id="btnVisitorDelete" class="btn btn-primary">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="visitorMappingModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="visitorMappingModal">Add/Update Device</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="checkbox-container" id="checkboxContainer"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="btnMappingSave" class="btn btn-primary ">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // Load department into the dropdowns
+        $.ajax({
+            url: 'api/att/GetCompanyBasedDepartment',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                console.log("Department Loaded: ", response);
+
+                if (response && response.length > 0) {
+                    $('#visitorDepartment').empty().append('<option value="">Select a department</option>');
+                    // Populate dropdown with device options
+                    $.each(response, function (index, department) {
+                        $('#visitorDepartment').append(
+                            $('<option></option>').attr('value', department.departmentName).text(department.departmentName)
+                        );
+                    });
+                } else {
+                    $('#visitorDepartment').html('<option value="">No departments available</option>');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading department: ", xhr.responseText);
+                $('#visitorDepartment').html('<option value="">Failed to load Departments</option>');
+            }
+        });
+
+
+
+
+        var visitorId = 0;
+        function generateTable(list) {
+            var $table = $("<table id='foo-row-toggler' class='table table-borderless datatable'>");
+            $table.append("<thead><tr><th>Id</th><th>Name</th><th>PhoneNo</th><th>InternCode</th><th>Department</th><th>Type</th><th>RFID</th><th>Status</th><th>Action</th></tr></thead>");
+            var $tbody = $("<tbody>");
+            $.each(list, function (i, val) {
+                var isActive;
+                if (val.isActive === true) {
+                    isActive = "active";
+                } else {
+                    isActive = "deactive";
+                }
+                var statusBadge = (isActive === "active") ? "<span class='badge bg-success'>active</span>" : "<span class='badge bg-danger'>in active</span>";
+                var $row = "<tr><td>" + val.id + "</td><td>" + val.name + "</td><td>" + val.phoneNo + "</td><td>" + val.internCode + "</td><td>" + val.department + "</td><td>" + val.type + "</td><td>" + val.rfid + "</td><td>" + statusBadge + "</td><td><button type='button' class='btnUpdate btn btn-sm btn-info m-1' data-bs-toggle='modal' data-bs-target='#visitorModal'>Update</button><button type='button' style='display: none;' class='btnMapping btn btn-sm btn-success m-1 d-none'>Mapping Devices</button><button type='button' class='btnDelete btn btn-sm btn-danger m-1'><i class='fa fa-edit'></i> Delete</button></td></tr>";
+                $tbody.append($row);
+            });
+            $tbody.append("</tbody>");
+            $table.append($tbody);
+            $("#tblVisitorList").html($table);
+            $("#foo-row-toggler").DataTable();
+        }
+        var list = JSON.parse('@Html.Raw(Json.Serialize(@ViewBag.visitorList))');
+        console.log(list)
+        generateTable(list);
+        $("#btnAdd").on("click", function () {
+            $(".text-danger").text("");
+            $('#visitorId').val(0);
+            $('#visitorName').val('');
+            $('#visitorphoneNo').val('');
+            $('#visitorpurpose').val('');
+            $('#visitortype').val('');
+            $('#visitorRfid').val('');
+            $('#active').prop('checked', true);
+            $('#fromDate').val('');
+            $('#toDate').val('');
+            $('#visitorDepartment').val('');
+            $('#visitorInternCode').val('');
+            visitorId = 0;
+            $("#visitorModal").modal("show");
+        });
+
+        function validateForm() {
+            let isValid = true;
+            $(".text-danger").text("");
+            if (!$('#visitorId').val()) {
+                $('#VisitorIdError').text("Visitor Id is required.");
+                isValid = false;
+            }
+
+
+            if (!$('#visitorName').val()) {
+                $('#VisitorNameError').text("Visitor Name is required.");
+                isValid = false;
+            }
+            else if (!/^[a-zA-Z0-9\s]+$/.test($('#visitorName').val())) {
+                $('#VisitorNameError').text("Only letters and numbers are allowed.");
+                isValid = false;
+            }
+
+
+            if (!$('#visitorphoneNo').val()) {
+                $('#VisitorphoneNoError').text("Visitor PhoneNo is required.");
+                isValid = false;
+            }
+            else if (!/^[0-9]+$/.test($('#visitorphoneNo').val())) {
+                $('#VisitorphoneNoError').text("Only numbers are allowed.");
+                isValid = false;
+            }
+
+
+            if (!$('#visitorpurpose').val()) {
+                $('#VisitorpurposeError').text("Visitor Purpose is required.");
+                isValid = false;
+            }
+            else if (!/^[a-zA-Z0-9\s]+$/.test($('#visitorpurpose').val())) {
+                $('#VisitorpurposeError').text("Only letters and numbers are allowed.");
+                isValid = false;
+            }
+
+            if (!$('#visitortype').val()) {
+                $('#VisitorTypeError').text("Visitor Type is required.");
+                isValid = false;
+            }
+
+
+            if (!$('#visitorRfid').val()) {
+                $('#VisitorRFIDError').text("Visitor RFID is required.");
+                isValid = false;
+            }
+            else if (!/^[a-zA-Z0-9\s]+$/.test($('#visitorpurpose').val())) {
+                $('#VisitorpurposeError').text("Only letters and numbers are allowed.");
+                isValid = false;
+            }
+
+            if (!$('#visitorDepartment').val()) {
+                $('#VisitorDepartmentError').text("Visitor Department is required.");
+                isValid = false;
+            }
+
+
+
+            if (!$('#visitorInternCode').val()) {
+                $('#VisitorInternCodeError').text("Visitor InternCode is required.");
+                isValid = false;
+            }
+            else if (!/^[a-zA-Z0-9\s]+$/.test($('#visitorInternCode').val())) {
+                $('#VisitorInternCodeError').text("Only letters and numbers are allowed.");
+                isValid = false;
+            }
+
+
+
+
+
+            return isValid;
+        }
+        $("#btnSave").on("click", function () {
+            var checkedValue = $('input[type=radio][name=option]:checked').val();
+            var status = false
+            if (checkedValue == 1) {
+                status = true;
+            }
+            if (!validateForm()) {
+                return;
+            }
+            var visitorDetail = {
+                id: visitorId,
+                name: $('#visitorName').val(),
+                phoneNo: $('#visitorphoneNo').val(),
+                purpose: $('#visitorpurpose').val(),
+                type: $('#visitortype').val(),
+                rfid: $('#visitorRfid').val(),
+                from_date: $('#fromDate').val(),
+                to_date: $('#toDate').val(),
+                department: $('#visitorDepartment').val(),
+                internCode: $('#visitorInternCode').val(),
+                IsActive: status
+            };
+            console.log(visitorDetail)
+            $.ajax({
+                context: document.body,
+                data: { obj: visitorDetail },
+                success: function (data) {
+                    console.log(data)
+                    if (data.success === true) {
+                        Swal.fire({
+                            title: "Information!",
+                            text: data.message,
+                            icon: "success"
+                        });
+                        location.reload();
+                    }
+                    else if (data.success === false) {
+                        Swal.fire({
+                            title: "Error!",
+                            text: data.message,
+                            icon: "warning"
+                        });
+                    }
+                },
+                dataType: "json",
+                type: "POST",
+                url: "att/UpdateVisitorDetail"
+            });
+        });
+
+
+
+        $("#btnMappingSave,#btnMappingSaveModal").on("click", function () {
+            $("#btnMappingSave").html("Please wait...");
+            var chkValues = [];
+            $('.dynamicCheckbox:checked').each(function () {
+                chkValues.push({ deviceId: $(this).val() });
+            });
+            console.log(chkValues)
+            $.ajax({
+                context: document.body,
+                data: { visitorId: VisitId, dList: chkValues },
+                
+                success: function (data) {
+                    $("#btnMappingSave").html("Save changes");
+                    console.log(data);
+                    if (data.success === true) {
+                        $("#visitorMappingModal").modal("hide");
+                        Swal.fire({
+                            title: "Device!",
+                            text: "Device Mapped Succesfully!",
+                            icon: "success"
+                        });
+                    }
+                    else if (data.success === false) {
+                        swal(data.Message, "", "error");
+                    }
+                },
+                dataType: "json",
+                type: "POST",
+                url: "att/VisitorMappingDevice"
+            });
+        });
+        $('#tblVisitorList tbody').on('click', '.btnMapping', function () {
+            var Id = $("#tblVisitorList table tbody tr:nth-child(" + this.closest("tr").rowIndex + ") td:nth-child(1)").html();
+            VisitId = Id;
+            $.ajax({
+                context: document.body,
+                data: { visitorId: Id },
+                error: function (e) { swal(e.Message, "", "error"); },
+                success: function (data) {
+                    console.log(data)
+
+                    if (data.success === true) {
+                        console.log(data.list)
+                        items = data.list;
+                        $('#checkboxContainer').empty();
+                        $.each(items, function (index, item) {
+                            var checkbox = $('<input />', {
+                                type: 'checkbox',
+                                class: 'dynamicCheckbox',
+                                id: 'checkbox' + item.id,
+                                value: item.id,
+                                checked: item.status
+                            });
+                            var label = $('<label />', {
+                                'for': 'checkbox' + item.id,
+                                text: item.name
+                            });
+                            $('#checkboxContainer').append(checkbox).append(label).append('<br>');
+                        });
+                        $("#visitorMappingModal").modal("show");
+                    }
+                    else if (data.success === false) {
+                        swal(data.Message, "", "error");
+                    }
+                },
+                dataType: "json",
+                type: "POST",
+                url: "att/GetVisitorDeviceList"
+            });
+        });
+
+        $("#btnVisitorDelete").on("click", function () {
+            $.ajax({
+                context: document.body,
+                data: { visitorId: visitorId },
+                success: function (data) {
+                    if (data.success === true) {
+                        Swal.fire({
+                            title: "Information!",
+                            text: data.message,
+                            icon: "success"
+                        });
+                        location.reload();
+                    } else if (data.success === false) {
+                        Swal.fire({
+                            title: "Error!",
+                            text: data.message,
+                            icon: "warning"
+                        });
+                    }
+                },
+                dataType: "json",
+                type: "POST",
+                url: "att/DeleteVisitor"
+            });
+        });
+
+        $('#tblVisitorList tbody').on('click', '.btnUpdate', function () {
+            $(".text-danger").text("");
+            visitorId = $(this).closest("tr").find("td:nth-child(1)").html();
+            function formatDate(dateTimeString) {
+                return dateTimeString.split('T')[0];
+            }
+            $.ajax({
+                context: document.body,
+                data: { visitorId: visitorId },
+                error: function (e) {
+                    swal(e.Message, "", "error");
+                },
+                success: function (data) {
+                    console.log(data)
+                    if (data.success === true) {
+                        $('#visitorId').val(visitorId);
+                        $('#visitorName').val(data.list.name);
+                        $('#visitorphoneNo').val(data.list.phoneNo);
+                        $('#visitorpurpose').val(data.list.purpose);
+                        $('#visitortype').val(data.list.type);
+                        $('#visitorRfid').val(data.list.rfid);
+                        $('#fromDate').val(formatDate(data.list.from_date));
+                        $('#toDate').val(formatDate(data.list.to_date));
+                        $('#visitorInternCode').val(data.list.internCode);
+                        $('#visitorDepartment').val(data.list.department);
+
+                        if (data.list.isActive) {
+                            $('#active').prop('checked', true);
+                        } else {
+                            $('#deactive').prop('checked', true);
+                        }
+                        $("#visitorModal").modal("show");
+                    } else if (data.success === false) {
+                        swal(data.message, "", "error");
+                    }
+                },
+                dataType: "json",
+                type: "POST",
+                url: "att/GetVisitorDetail"
+            });
+        });
+        $('#tblVisitorList tbody').on('click', '.btnDelete', function () {
+            visitorId = $(this).closest("tr").find("td:nth-child(1)").html();
+            $("#deleteVisitorModal").modal("show");
+        });
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+

@@ -1,0 +1,349 @@
+﻿@inject IHttpContextAccessor context;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> @ViewData["Title"] - IvaTechnos</title>
+    <link rel="icon" sizes="180x180" type="image/x-icon" href="assets/logo.png">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link href="./assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="./assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="./assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="./assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="./assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="./assets/vendor/simple-datatables/style.css" rel="stylesheet">
+    <link href="./assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <style>
+        .nav-link {
+            display: flex;
+            align-items: left;
+        }
+
+            .nav-link .employee-text {
+                flex-grow: 1;
+                text-align: left; 
+            }
+
+            .nav-link .bi-caret-down {
+                margin-left: auto; 
+            }
+    </style>
+</head>
+
+
+
+<body>
+    <header id="header" class="header fixed-tops d-flex align-items-center">
+        <div class="d-flex align-items-center justify-content-between">
+            <div asp-area="" asp-controller="Dashboard" asp-action="List" class="logo d-flex align-items-center">
+                <img src="./assets/logo.png" alt="">
+                <span class="d-none d-lg-block">Technos</span>
+            </div>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div>
+     
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+               @*  <li class="nav-item pe-3 me-3 position-relative">
+                    <!-- Added position-relative -->
+                    <span class="company-name h5 mb-0 fw-bold text-dark">
+                        @HttpContextAccessor.HttpContext.Session.GetString("companyname")
+                    </span>
+                </li> *@
+                <li class="nav-item dropdown pe-3">
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0 dropdown-toggle"
+                       href="#"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        <img src="assets/img/user.png" alt="Profile" class="rounded-circle">
+                        <span class="d-none d-md-block ps-2">@ViewBag.username</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" asp-controller="Account" asp-action="Login">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Sign Out</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+    </header>
+    <aside id="sidebar" class="sidebar">
+        <ul class="sidebar-nav" id="sidebar-nav">
+
+            @if (HttpContextAccessor.HttpContext.Session.GetString("userRole") == "admin" || HttpContextAccessor.HttpContext.Session.GetString("userRole") == "super admin")
+            {
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="Dashboard" asp-action="List">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            }
+
+            @if (HttpContextAccessor.HttpContext.Session.GetString("userRole") == "super admin")
+            {
+            <li class="nav-item">
+                <a class="nav-link collapsed" asp-area="" asp-controller="Device" asp-action="List">
+                    <i class="bi bi-list"></i>
+                    <span>Device</span>
+                </a>
+            </li>
+             }
+
+            @if (HttpContextAccessor.HttpContext.Session.GetString("userRole") == "admin" || HttpContextAccessor.HttpContext.Session.GetString("userRole") == "super admin")
+            {
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-toggle="collapse" href="#employeeSubmenu" role="button" aria-expanded="false" aria-controls="employeeSubmenu">
+                    <i class="bi bi-person"></i>
+                    <span class="employee-text">Employee</span>
+                    <i class="bi bi-caret-down float-right"></i>
+                </a>
+                <ul class="collapse" id="employeeSubmenu" data-bs-parent="#sidebar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Employee" asp-action="List">
+                            <i class="bi bi-person-check"></i>
+                            <span>All Employees</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Employee" asp-action="Visitor">
+                            <i class="bi bi-people"></i>
+                            <span>Visitor</span>
+                        </a>
+                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Employee" asp-action="Department">
+                                <i class="bi bi-stack"></i>
+                                <span>Department</span>
+                            </a>
+                        </li>
+                </ul>
+            </li>
+            }
+
+            @if (HttpContextAccessor.HttpContext.Session.GetString("userRole") == "admin" || HttpContextAccessor.HttpContext.Session.GetString("userRole") == "super admin")
+            {
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-toggle="collapse" href="#employeeSub" role="button" aria-expanded="false" aria-controls="employeeSubmenu">
+                    <i class="bi bi-diagram-3"></i>
+                    <span class="employee-text">Attendance</span>
+                    <i class="bi bi-caret-down float-right"></i>
+                </a>
+                <ul class="collapse" id="employeeSub" data-bs-parent="#sidebar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Attendance" asp-action="Today">
+                            <i class="bi bi-calendar-check"></i>
+                            <span>Today</span>
+                        </a>
+                    </li>
+
+
+
+                      @*  <li class="nav-item">
+                         <a class="nav-link" asp-area="" asp-controller="Attendance" asp-action="List">
+                             <i class="bi bi-table"></i>
+                             <span>Sheet</span>
+                         </a>
+                     </li> *@
+
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Attendance" asp-action="Report">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                            
+                            <span>Employee Report</span>
+                        </a>
+                    </li><li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Attendance" asp-action="InternReport">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                            
+                            <span>Intern Report</span>
+                        </a>
+                    </li>
+
+                   @*    <li class="nav-item">
+                         <a class="nav-link" asp-area="" asp-controller="Attendance" asp-action="ManualUpdation">
+                             <i class="bi bi-file-earmark-pdf"></i>
+                            
+                             <span>ManualEntry</span>
+                         </a>
+
+                     </li> *@
+
+                </ul>
+            </li>
+            }
+
+
+           @*    @if (HttpContextAccessor.HttpContext.Session.GetString("userRole") == "admin" || HttpContextAccessor.HttpContext.Session.GetString("userRole") == "super admin")
+             {
+             <li class="nav-item">
+                 <a class="nav-link collapsed" data-bs-toggle="collapse" href="#leaveSubmenu" role="button" aria-expanded="false" aria-controls="employeeSubmenu">
+                     <i class="bi bi-person"></i>
+                     <span class="employee-text">Leave Management</span>
+                     <i class="bi bi-caret-down float-right"></i>
+                 </a>
+                 <ul class="collapse" id="leaveSubmenu" data-bs-parent="#sidebar-nav">
+                     <li class="nav-item">
+                         <a class="nav-link" asp-area="" asp-controller="LeaveManagement" asp-action="HolidayCalender">
+                             <i class="bi bi-person-check"></i>
+                             <span>Official Holidays </span>
+                         </a>
+                     </li>
+                   
+                 </ul>
+             </li>
+             }
+ *@
+
+
+
+
+ 
+
+            @if (HttpContextAccessor.HttpContext.Session.GetString("userRole") == "admin" || HttpContextAccessor.HttpContext.Session.GetString("userRole") == "super admin")
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-toggle="collapse" href="#LogRecordsSubmenu" role="button" aria-expanded="false" aria-controls="LogRecordsSubmenu">
+                        <i class="bi bi-person"></i>
+                        <span class="employee-text">Log Records</span>
+                        <i class="bi bi-caret-down float-right"></i>
+                    </a>
+                    <ul class="collapse" id="LogRecordsSubmenu" data-bs-parent="#sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="LogRecords" asp-action="EmployeeLogRecords">
+                                <i class="bi bi-journal-text"></i>
+                                <span>Employee Logs</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="LogRecords" asp-action="InternLogRecords">
+                                <i class="bi bi-journal-text"></i>
+                                <span>Intern Logs</span>
+                            </a>
+                          </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="LogRecords" asp-action="GenerateEmployeeLogRecords">
+                                <i class="bi bi-journal-bookmark"></i>
+                                <span>All Employee Logs</span>
+                            </a>
+                        </li>
+                         
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="LogRecords" asp-action="GenerateInternLogRecords">
+                                <i class="bi bi-journal-bookmark"></i>
+                                <span> All Intern Logs</span>
+                            </a>
+                        </li>
+                       
+                    </ul>
+                </li>
+            }
+
+
+        </ul>
+    </aside>
+    <main id="main" class="main" role="main">
+        @RenderBody()
+    </main>
+       <div class="login-container">
+        @RenderBody()
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
+    <script src="./assets/vendor/apexcharts/apexcharts.min.js"></script>
+    <script src="./assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="./assets/vendor/chart.js/chart.umd.js"></script>
+    <script src="./assets/vendor/echarts/echarts.min.js"></script>
+    <script src="./assets/vendor/quill/quill.js"></script>
+    <script src="./assets/vendor/simple-datatables/simple-datatables.js"></script>
+    <script src="./assets/vendor/tinymce/tinymce.min.js"></script>
+    <script src="./assets/vendor/php-email-form/validate.js"></script>
+    <script src="./assets/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+    var collapsibleLinks = document.querySelectorAll("[data-bs-toggle='collapse']");
+
+    collapsibleLinks.forEach(function (link) {
+        link.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent default behavior
+            event.stopPropagation(); // Stop click from bubbling up
+
+            var submenu = document.querySelector(this.dataset.bsTarget);
+            var icon = this.querySelector("i.bi"); // Select first icon inside link
+
+            if (submenu) {
+                var isExpanded = submenu.classList.contains("show");
+
+                // Close all other submenus
+                document.querySelectorAll(".collapse.show").forEach(function (openMenu) {
+                    if (openMenu !== submenu) {
+                        openMenu.classList.remove("show");
+                        var parentLink = document.querySelector("[data-bs-target='#" + openMenu.id + "']");
+                        if (parentLink) {
+                            parentLink.setAttribute("aria-expanded", "false");
+                            var parentIcon = parentLink.querySelector("i.bi");
+                            if (parentIcon) {
+                                parentIcon.classList.remove("bi-caret-up");
+                                parentIcon.classList.add("bi-caret-down");
+                            }
+                        }
+                    }
+                });
+
+                // Toggle clicked menu
+                if (isExpanded) {
+                    submenu.classList.remove("show");
+                    this.setAttribute("aria-expanded", "false");
+                    if (icon) {
+                        icon.classList.remove("bi-caret-up");
+                        icon.classList.add("bi-caret-down");
+                    }
+                } else {
+                    submenu.classList.add("show");
+                    this.setAttribute("aria-expanded", "true");
+                    if (icon) {
+                        icon.classList.remove("bi-caret-down");
+                        icon.classList.add("bi-caret-up");
+                    }
+                }
+            }
+        });
+    });
+});
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

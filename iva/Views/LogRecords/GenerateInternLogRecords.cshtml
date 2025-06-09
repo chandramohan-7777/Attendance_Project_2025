@@ -1,0 +1,173 @@
+﻿@{
+    ViewData["Title"] = "GenerateInternLogRecords";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    .button-59 {
+        align-items: center;
+        background-color: #fff;
+        border: 1px solid #000;
+        border-radius: 5px;
+        box-sizing: border-box;
+        color: #000;
+        cursor: pointer;
+        display: inline-flex;
+        fill: #000;
+        font-family: Inter,sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        height: 38px;
+        justify-content: center;
+        letter-spacing: -.8px;
+        line-height: 24px;
+        min-width: 120px;
+        outline: 0;
+        padding: 0 8px;
+        text-align: center;
+        text-decoration: none;
+        transition: all .3s;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+    }
+
+        .button-59:focus {
+            color: #171e29;
+        }
+
+        .button-59:hover {
+            border-color: #06f;
+            color: #06f;
+            fill: #06f;
+        }
+
+        .button-59:active {
+            border-color: #06f;
+            color: #06f;
+            fill: #06f;
+        }
+</style>
+<div>
+    <h4 class="mb-4">Generate Excel Sheet All Intern Logs</h4>
+</div>
+<div class="container mt-3">
+
+    <h3>Company :  <span style="color:#06f">@ViewBag.CompanyName</span> </h3>
+
+
+    <div class="d-flex align-items-center mt-3">
+        <label for="startDate" class="me-2">Start Date:</label>
+        <input type="date" id="startDate" class="form-control me-3" style="width: 150px;">
+
+        <label for="endDate" class="me-2">End Date:</label>
+        <input type="date" id="endDate" class="form-control me-3" style="width: 150px;">
+
+        <button class="btn button-59" type="button" id="downloadButton">Download</button>
+    </div>
+
+
+
+
+</div>
+
+<div id="loadingMessage" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.8); color: ghostwhite; padding: 20px; border-radius: 10px; z-index: 9999;">
+    please wait,Downloading the data...
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+
+        function showLoadingMessage() {
+            $("#loadingMessage").fadeIn();
+        }
+        function hideLoadingMessage() {
+            $("#loadingMessage").fadeOut();
+        }
+
+
+        $('#downloadButton').on('click', function () {
+
+            var SelectedStartDate = $('#startDate').val();
+            var SelectedEndDate = $('#endDate').val();
+
+            if (!SelectedStartDate || !SelectedEndDate) {
+                Swal.fire("All fields are required!", "", "warning");
+                hideLoadingMessage();
+                return;
+            }
+
+            else {
+                showLoadingMessage();
+                fetchData(SelectedStartDate, SelectedEndDate);
+            }
+        });
+
+        function fetchData(SelectedStartDate, SelectedEndDate) {
+            console.log("fetch data called");
+
+            // Create the request data object matching your C# class structure
+            var requestData = {
+                startDate: SelectedStartDate,
+                endDate: SelectedEndDate,
+            };
+
+            $.ajax({
+                url: 'api/DownloadInternLogRecordsExcel',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(requestData),
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function (data, status, xhr) {
+                    // Get filename from content-disposition header
+                    let filename = "AllInternLogRecords.xlsx"; // Fallback name
+                    const disposition = xhr.getResponseHeader('content-disposition');
+
+                    if (disposition) {
+                       
+                        const filenameMatch = disposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                        if (filenameMatch && filenameMatch[1]) {
+                            filename = filenameMatch[1]
+                                .replace(/['"]/g, '') 
+                                .replace(/^UTF-8''/i, '') 
+                                .replace(/^filename_=/, ''); 
+                            filename = decodeURIComponent(filename); 
+                        }
+                    }
+
+                    // Create download link
+                    const blob = new Blob([data]);
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+
+                    // Clean up
+                    setTimeout(function () {
+                        document.body.removeChild(link);
+                        window.URL.revokeObjectURL(link.href);
+                    }, 100);
+
+                    hideLoadingMessage();
+                },
+
+                error: function (xhr, status, error) {
+                    console.error("Error:", error);
+                    console.error("Status:", status);
+                    console.error("Full response:", xhr.responseText);
+                    alert('Error fetching data. Check console for details.');
+                    hideLoadingMessage();
+                }
+            });
+        }
+
+
+    });
+</script>

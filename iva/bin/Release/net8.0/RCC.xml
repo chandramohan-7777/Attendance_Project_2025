@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RCC</name>
+    </assembly>
+    <members>
+        <member name="T:RCC.DevController">
+            <summary>
+            DevController
+            </summary>
+        </member>
+        <member name="M:RCC.DevController.#ctor(System.String)">
+            <summary>
+            DevController
+            </summary>
+            <param name="host"></param>
+        </member>
+        <member name="P:RCC.DevController.LastErr">
+            <summary>
+            The Error message of the last failed call.
+            </summary>
+        </member>
+        <member name="M:RCC.DevController.Add(System.String,System.String)">
+            <summary>
+            Adds the given card to the device
+            If false is returned, check the LastErr for reason
+            </summary>
+            <param name="dev"></param>
+            <param name="card"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RCC.DevController.Del(System.String,System.String)">
+            <summary>
+            Removes the given card from the device
+            If false is returned, check the LastErr for reason
+            </summary>
+            <param name="dev"></param>
+            <param name="card"></param>
+        </member>
+        <member name="M:RCC.DevController.Dispose">
+            <summary>
+            Dispose
+            </summary>
+        </member>
+        <member name="M:RCC.DevController.Save(System.String)">
+            <summary>
+            Saves the changes done to the device
+            If false is returned, check the LastErr for reason
+            </summary>
+            <param name="dev"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RCC.DevController.Sync(System.String)">
+            <summary>
+            Update the DB with offline logs from the device
+            If false is returned, check the LastErr for reason
+            </summary>
+            <param name="dev"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RCC.DevController.List(System.String)">
+            <summary>
+            List the codes registered in the device
+            If null is returned, check the LastErr for reason
+            </summary>
+            <param name="dev"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

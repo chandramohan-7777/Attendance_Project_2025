@@ -1,0 +1,666 @@
+﻿@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .custom-tooltip .tooltip-inner {
+        background-color: #F5F5F5;
+        color: #000;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .custom-tooltip .arrow::before {
+        border-top-color: #F5F5F5;
+    }
+
+    #datepicker {
+        width: 250px;
+        padding: 10px;
+        font-size: 1em;
+    }
+
+    table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 5px;
+        text-align: center;
+        vertical-align: middle;
+        height: 70px;
+        width: 150px;
+    }
+
+    th {
+        background-color: lightsteelblue;
+    }
+
+    td {
+        background-color: #fff;
+    }
+
+    thead {
+        text-align: center;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    table.dataTable > thead > tr > th,
+    table.dataTable > thead > tr > td {
+        text-align: center;
+        padding: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255);
+    }
+
+    table.dataTable thead > tr > th.dt-orderable-asc, table.dataTable thead > tr > th.dt-orderable-desc, table.dataTable thead > tr > th.dt-ordering-asc, table.dataTable thead > tr > th.dt-ordering-desc,
+    table.dataTable thead > tr > td.dt-orderable-asc,
+    table.dataTable thead > tr > td.dt-orderable-desc,
+    table.dataTable thead > tr > td.dt-ordering-asc,
+    table.dataTable thead > tr > td.dt-ordering-desc {
+        text-align: center;
+        position: relative;
+        padding-right: 30px;
+        background-color: #2eca6a;
+    }
+
+    .button-59 {
+        align-items: center;
+        background-color: #fff;
+        border: 1px solid #000;
+        border-radius: 5px;
+        box-sizing: border-box;
+        color: #000;
+        cursor: pointer;
+        display: inline-flex;
+        fill: #000;
+        font-family: Inter,sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        height: 38px;
+        justify-content: center;
+        letter-spacing: -.8px;
+        line-height: 24px;
+        min-width: 120px;
+        outline: 0;
+        padding: 0 17px;
+        text-align: center;
+        text-decoration: none;
+        transition: all .3s;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+    }
+
+        .button-59:focus {
+            color: #171e29;
+        }
+
+        .button-59:hover {
+            border-color: #06f;
+            color: #06f;
+            fill: #06f;
+        }
+
+        .button-59:active {
+            border-color: #06f;
+            color: #06f;
+            fill: #06f;
+        }
+</style>
+
+
+
+
+
+<div class="row">
+    <div class="col-10">
+        <div class="pagetitle">
+            <h1>Attendance List</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item active">Attendance List</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Navbar content -->
+        <div class="collapse navbar-collapse d-flex align-items-center justify-content-between">
+            <!-- Month and Year Filter -->
+            <div class="d-flex align-items-center">
+                <label for="monthSelect" class="me-2">Month:</label>
+                <select id="monthSelect" class="form-select me-3" style="width: 150px;">
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+
+                <label for="yearSelect" class="me-2">Year:</label>
+                <select id="yearSelect" class="form-select me-3" style="width: 150px;">
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                    <option value="2028">2028</option>
+                    <option value="2029">2029</option>
+                    <option value="2030">2030</option>
+                </select>
+
+                <button class="btn  button-59" type="button" id="filterButton">Filter</button>
+            </div>
+
+
+        </div>
+    </div>
+</nav>
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal Title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                This is the modal content.
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+<div id="tblAttendance" class="table-responsive"></div>
+
+
+<script>
+    $(document).ready(function () {
+        var list = JSON.parse('@Html.Raw(Json.Serialize(@ViewBag.list))');
+        console.log(list);
+        generateTable(list);
+        var now = new Date();
+        var currentMonth = now.getMonth() + 1;
+        var currentYear = now.getFullYear();
+        $("#monthSelect").val(currentMonth);
+        $("#yearSelect").val(currentYear);
+        console.log("month", currentMonth);
+        console.log("Year", currentYear);
+
+        $('#filterButton').on('click', function () {
+            // showLoadingMessage();
+            var selectedMonth = $('#monthSelect').val();
+            var selectedYear = $('#yearSelect').val();
+
+            fetchData(selectedMonth, selectedYear);
+        });
+
+
+        function fetchData(month, year) {
+            $.ajax({
+                context: document.body,
+                url: 'api/att/GetMonthlyReport',
+                type: 'POST',
+                data: { month: month, year: year },
+                success: function (response) {
+                    if (response.success) {
+                        // hideLoadingMessage();
+                        list = response.list;
+                        generateTable(list);
+
+
+                    } else {
+                        alert('Error fetching data: ' + response.message);
+                    }
+                }
+            });
+        }
+
+
+
+
+
+        function convertDate(cDate) {
+            var dateObj = new Date(cDate);
+            var formattedDate = dateObj.toLocaleDateString();
+            var formattedTime = dateObj.toLocaleTimeString();
+            return formattedDate + " " + formattedTime;
+        };
+
+        function calculateTime(sDate, eDate) {
+            const start = new Date(sDate);
+            const end = new Date(eDate);
+            const diffInMilliseconds = end - start;
+            const diffInMinutes = Math.floor(diffInMilliseconds / (1000 * 60));
+            const hours = Math.floor(diffInMinutes / 60);
+            const minutes = diffInMinutes % 60;
+            return `${hours}hrs ${minutes}mins`;
+        }
+
+        function convertTime(cDate) {
+            var dateObj = new Date(cDate);
+            var options = { hour: '2-digit', minute: '2-digit', hour12: true };
+            var formattedTime = dateObj.toLocaleTimeString('en-US', options);
+            return formattedTime;
+        };
+
+        function generateTable(list) {
+            var count = 0;
+            var totDays = 0;
+            var wDays = 0;
+            var datelist;
+
+            $.each(list, function (i, val) {
+                count = val.dList.length;
+                datelist = val.dList;
+            });
+
+            var $table = $("<table id='foo-row-toggler' class='table table-bordered border-bottom datatable'>");
+            var $thead = $("<thead>");
+            var $headerRow = $("<tr>");
+
+            $headerRow.append("<th>Code</th><th>Name</th><th>Days</th>");
+            for (var j = 1; j <= count; j++) {
+                $headerRow.append("<th>" + j + "</th>");
+            }
+
+            $thead.append($headerRow);
+            $table.append($thead);
+
+            var $tbody = $("<tbody>");
+
+            $.each(list, function (i, val) {
+                totDays = 0;
+                wDays = 0;
+                var $row = $("<tr>");
+                $row.append("<td>" + val.employeeCode + "</td>");
+                $row.append("<td>" + val.employeeName + "</td>");
+
+                $.each(val.dList, function (index, d) {
+                    if (d.dType === 'weekend' && d.status === true) {
+                        wDays++;
+                    } else if (d.dType !== 'weekend') {
+                        totDays++;
+                        if (d.status === true) {
+                            wDays++;
+                        }
+                    }
+                });
+
+                $row.append("<td>" + wDays + "/" + totDays + "</td>");
+
+                $.each(val.dList, function (index, d) {
+
+
+
+                    var tooltip = `title='In Time: ${convertTime(d.empIn)}, Out Time: ${convertTime(d.empOut)}'`;
+                    var imgSrc = d.status ? "checkedtrue.png" : "reddelete.png";
+                    var timeColor = d.status && calculateTime(d.empIn, d.empOut) >= "9hrs 0mins" ? "green" : "red";
+                    var imgTag = `<img style='width:20px;height:20px' src='assets/img/${imgSrc}'/>`;
+                    var inout = d.empIn !== "0001-01-01T00:00:00" && d.empOut !== "0001-01-01T00:00:00"
+                        ? `<div style='color:${timeColor}'>${calculateTime(d.empIn, d.empOut)}</div>`
+                        : `<div>'--:--'</div>`
+                    var holidayInOut = d.empIn !== "0001-01-01T00:00:00" && d.empOut !== "0001-01-01T00:00:00"
+                        ? `<div style='color:${timeColor}'>${calculateTime(d.empIn, d.empOut)}</div>`
+                        : `<div>-</div>`
+
+                    var btnDis = `
+                                    <button
+                                        class='openPopupBtn'
+                                        data-intime='${convertTime(d.empIn)}'
+                                        data-outtime='${convertTime(d.empOut)}'
+                                        data-date='${d.date}'
+                                        data-actualin='${d.empIn}'
+                                        data-actualout='${d.empOut}'
+                                        data-rfid='${val.rfid}'
+                                        style='width:20px;height:20px; border:none; background:transparent; cursor:pointer;'>
+                                        <img src="assets/img/editing.png" style="width: 130%; height: 100%;" />
+                                    </button>`;
+
+                    if (d.dType === 'weekend' && d.status === false) {
+                        $row.append("<td ><div style='text-align: center;'>"
+                            + "<img style='width:20px;height:20px' src='assets/img/star.png'/></div>"
+                            + "<div></div>"
+                            + "</td>");
+                    }
+
+                    else if (d.status === true) {
+                        $row.append(`
+                                    <td data-bs-toggle='tooltip' data-placement='bottom' ${tooltip} style='cursor: pointer;'>
+                                        <div style='text-align: center;'>${imgTag}</div>
+                                               ${btnDis}
+                                                   ${inout}
+                                `);
+                    }
+
+                    else if (d.workingDayType === 'Holiday') {
+                        $row.append(`<td>
+
+                                                   <div>${btnDis}</div>
+                                                    <div> ${holidayInOut} </div>
+                                                   <div style="text-align: center; color: #27ae60;">
+                                                    <h6>Holiday</h6>
+                                                </div>
+                                        </td>`);
+
+                    }
+                    else {
+                        $row.append(`<td>
+                                        <div style="text-align: center;">
+                                            <img style="width:20px;height:20px" src="assets/img/reddelete.png"/>
+                                        </div>
+                                        <div>${btnDis}</div>
+                                    </td>`);
+
+                    }
+
+
+                });
+
+                $tbody.append($row);
+            });
+
+            $table.append($tbody);
+            $("#tblAttendance").html($table);
+            $("#foo-row-toggler").DataTable();
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        }
+
+        $('#btnFilter').click(function () {
+            var fDate = $('#fromDatePicker').val();
+            var tDate = $('#toDatePicker').val();
+
+            if (!fDate && !tDate) {
+                $('#lblDate').text("Pick the from date and to date!");
+            } else if (!fDate) {
+                $('#lblDate').text("Pick the from date!");
+            } else if (!tDate) {
+                $('#lblDate').text("Pick the to date!");
+            } else {
+                $('#lblDate').text("");
+            }
+        });
+
+
+
+
+
+
+
+
+
+        $(document).on('click', '.openPopupBtn', function () {
+
+            var inTime = $(this).data('intime');
+            var outTime = $(this).data('outtime');
+
+            var date = $(this).data('date');
+            var rfid = $(this).data('rfid');
+
+
+
+            var storedActualInTime = $(this).data('actualin');
+            var storedActualOutTime = $(this).data('actualout');
+
+            console.log("Stored Actual In Time:", storedActualInTime);
+            console.log("Stored Actual Out Time:", storedActualOutTime);
+
+            // Store the values in the modal using data attributes
+            $('#exampleModal')
+                .data('storedActualInTime', storedActualInTime)
+                .data('storedActualOutTime', storedActualOutTime);
+
+
+
+            if (!date) {
+                console.error("Date is missing!");
+                return;
+            }
+
+            var originalDate = date.split('T')[0];
+            function convertTo24Hour(time) {
+                if (!time) return '';
+                var [timePart, modifier] = time.split(' ');
+                let [hours, minutes] = timePart.split(':');
+
+                if (modifier === 'PM' && hours !== '12') {
+                    hours = String(parseInt(hours) + 12);
+                }
+                if (modifier === 'AM' && hours === '12') {
+                    hours = '00';
+                }
+                return `${hours}:${minutes}`;
+            }
+
+
+
+            var formattedInTime = inTime ? `${originalDate}T${convertTo24Hour(inTime)}` : '';
+            var formattedOutTime = outTime ? `${originalDate}T${convertTo24Hour(outTime)}` : '';
+
+            console.log("Formatted IN Time:", formattedInTime);
+            console.log("Formatted OUT Time:", formattedOutTime);
+
+            $('#exampleModal .modal-title').text("Details for manual entry");
+            $('#exampleModal .modal-body').html(`
+                <div class="col-md-12">
+                    <div class="card p-4 shadow-sm">
+                        <div class="mb-3">
+                            <label for="dateIn" class="form-label fw-bold">IN Time</label>
+                            <input type="datetime-local" id="dateIn" class="form-control" value="${formattedInTime}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="dateOut" class="form-label fw-bold">Out Time</label>
+                            <input type="datetime-local" id="dateOut" class="form-control" value="${formattedOutTime}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="rfidIn" class="form-label fw-bold">Employee RFID</label>
+                            <input type="text" id="rfidIn" class="form-control" value="${rfid}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="deviceSelectIn" class="form-label fw-bold">Select Device</label>
+                            <select id="deviceSelectIn" class="form-control">
+                                <option value="">Loading devices...</option>
+                            </select>
+                        </div>
+
+
+                               <div class="mb-3">
+                                      <label for="message" class="form-label fw-bold">Reason</label>
+                                  <textarea class="form-control" id="message" rows="3"></textarea>
+                                  <div class="form-text">Write a short message (max 200 characters).</div>
+                              </div>
+
+
+                            <div class="d-flex justify-content-center gap-2 mb-3">
+                            <button type="button" class="btn btn-danger" id="btnCloseModal">Close</button>
+
+                           <button type="button" id="btnUpdateInTimeOutTime" class="btn btn-primary">Update</button>
+                          </div>
+
+                    </div>
+                </div>
+            `);
+
+            $('#btnCloseModal').on('click', function () {
+                $('#exampleModal').modal('hide');
+            });
+
+            $.ajax({
+                url: 'api/att/GetCompanyDevices',
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    console.log("Devices Loaded: ", response);
+
+                    var deviceDropdown = $('#deviceSelectIn');
+                    deviceDropdown.empty().append('<option value="">Select a device</option>');
+
+                    if (response && response.length > 0) {
+                        $.each(response, function (index, device) {
+                            deviceDropdown.append(
+                                $('<option></option>').attr('value', device.device_code).text(device.device_code)
+                            );
+                        });
+                    } else {
+                        deviceDropdown.html('<option value="">No devices available</option>');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error loading devices: ", xhr.responseText);
+                    $('#deviceSelectIn').html('<option value="">Failed to load devices</option>');
+                }
+            });
+
+            $('#exampleModal').modal('show');
+        });
+
+        $(document).on("click", "#btnUpdateInTimeOutTime", function () {
+
+
+
+            var actualInTime = $('#exampleModal').data('storedActualInTime');
+            var actualOutTime = $('#exampleModal').data('storedActualOutTime');
+            let inTime = $('#dateIn').val().trim();
+            let outTime = $('#dateOut').val().trim();
+            let rfid = $('#rfidIn').val().trim();
+            let devCode = $('#deviceSelectIn').val();
+            let reason = $('#message').val();
+
+
+            let manualEntryData = {
+                RFID: rfid,
+                devCode: devCode,
+                reason: reason,
+                INTIME: {
+                    ActualInTime: actualInTime,
+                    InTime: inTime
+                },
+                OUTTIME: {
+                    ActualOutTime: actualOutTime,
+                    OuTime: outTime
+                }
+            };
+
+            console.log(manualEntryData);
+
+
+            if (!inTime || !rfid || !devCode || !outTime || !reason) {
+                Swal.fire("All fields are required!", "", "warning");
+                return;
+            }
+
+            var inTimeObj = new Date(inTime);
+            if (inTimeObj.getHours() === 0 && inTimeObj.getMinutes() === 0) {
+                Swal.fire("Update the inTime correctly!", "", "warning");
+                return;
+            }
+
+            var outTimeObj = new Date(outTime);
+            if (outTimeObj.getHours() === 0 && outTimeObj.getMinutes() === 0) {
+                Swal.fire("Update the outTime correctly!", "", "warning");
+                return;
+            }
+
+            if (inTimeObj >= outTimeObj) {
+                Swal.fire("Invalid InTime or OutTime || OutTime must be greater than InTime! ", "", "warning");
+                return;
+            }
+
+            var actualInTimeObj = new Date(actualInTime);
+            var actualOutTimeObj = new Date(actualOutTime);
+
+            var actualInDate = actualInTimeObj.toISOString().split("T")[0];
+            var actualOutDate = actualOutTimeObj.toISOString().split("T")[0];
+            var inDate = inTimeObj.toISOString().split("T")[0];
+            var outDate = outTimeObj.toISOString().split("T")[0];
+
+            if (actualInDate !== inDate) {
+                Swal.fire("Actual InTime must have the same date as InTime!", "", "warning");
+                return;
+            }
+
+            if (actualOutDate !== outDate) {
+                Swal.fire("Actual OutTime must have the same date as OutTime!", "", "warning");
+                return;
+            }
+
+            $.ajax({
+                url: "api/att/ManualEntryInTimeOutTime",
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(manualEntryData),
+                beforeSend: function () {
+                    console.log("Submitting IN time and outTime data..."); // Debugging
+                },
+                success: function (data) {
+                    if (data.success) {
+
+                        Swal.fire({
+                            title: "Update Information!",
+                            text: data.message,
+                            icon: "warning"
+                        });
+
+                        $('#exampleModal').modal('hide');
+                        setTimeout(() => location.reload(), 500);
+
+                    } else {
+                        Swal.fire({
+                            title: "Update Information!",
+                            text: data.message,
+                            icon: "warning"
+                        });
+                        $('#exampleModal').modal('hide');
+                        setTimeout(() => location.reload(), 1000);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    swal("Failed to submit data!", xhr.responseText || "Unknown error", "error");
+                    $('#exampleModal').modal('hide');
+                    setTimeout(() => location.reload(), 500);
+                }
+            });
+
+
+        });
+
+
+        $('#btnExport').click(function () {
+            var tableData = document.getElementById('foo-row-toggler');
+            var html = tableData.outerHTML;
+            var blob = new Blob([html], { type: "application/vnd.ms-excel" });
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Attendance_Report.xls";
+            link.click();
+        });
+
+    });
+</script>
+
